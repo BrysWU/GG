@@ -2,42 +2,105 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>GearGang</title>
+  <title>GearGang - Page Not Found</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      padding: 40px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      margin-top: 0;
+      color: #333;
+    }
+    p {
+      color: #666;
+      line-height: 1.5;
+    }
+    a {
+      color: #0070f3;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .notice {
+      font-size: 0.9em;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      color: #999;
+    }
+  </style>
   <script type="text/javascript">
-    // Single Page Apps for GitHub Pages - SPA Routing Handler
-    // MIT License - https://github.com/rafgraph/spa-github-pages
-    (function(l) {
-      // This script runs when a 404 is encountered
-      if (l.pathname.includes('/GG/')) {
-        if (l.search[1] === '/') {
-          // If we already have a redirect pattern in the search params, process it
-          var decoded = l.search.slice(1).split('&').map(function(s) { 
-            return s.replace(/~and~/g, '&');
-          }).join('?');
-          window.history.replaceState(null, null,
-            l.pathname.slice(0, -1) + decoded + l.hash
+    // Single Page Apps for GitHub Pages
+    // Modified based on https://github.com/rafgraph/spa-github-pages
+    
+    // This script handles direct access to routes in the SPA
+    (function(location) {
+      // Check if we're within the GG path
+      if (location.pathname.indexOf('/GG/') !== -1) {
+        // Check if this is already a redirect with search params
+        if (location.search.indexOf('?/') === 0) {
+          // Process the redirect - convert the encoded params back to normal URL
+          var decoded = location.search.slice(2);
+          window.history.replaceState(null, null, 
+            '/GG/' + decoded + location.hash
           );
         } else {
-          // Otherwise, create a redirect pattern for SPA routing
-          var pathSegmentsToKeep = 1; // Keep the /GG/ segment
-          l.replace(
-            l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-            l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
-            l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
-            (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-            l.hash
-          );
+          // Create a redirect - get everything after /GG/ as our route
+          var route = location.pathname.replace(/^\/GG\//, '');
+          
+          // For paths like /GG/GG/path (with duplicate GG)
+          route = route.replace(/^GG\//, '');
+          
+          if (route) {
+            location.replace(
+              location.protocol + '//' + location.hostname + 
+              (location.port ? ':' + location.port : '') +
+              '/GG/?/' + route +
+              (location.search ? '&' + location.search.slice(1) : '') +
+              location.hash
+            );
+          } else {
+            // We're at the root /GG/ path with no further route
+            // Just stay here (no need for redirect)
+          }
         }
       } else {
-        // If outside the /GG/ path, redirect to the app root
-        window.location.href = '/GG/';
+        // If not within /GG/ path, redirect to app root
+        setTimeout(function() {
+          window.location.href = '/GG/';
+        }, 1000);
       }
-    }(window.location));
+    })(window.location);
   </script>
 </head>
 <body>
-  <!-- This page is only used for SPA routing in GitHub Pages -->
-  <!-- The content is not visible to users as the script runs immediately -->
+  <div class="container">
+    <h1>Page Not Found</h1>
+    <p>The page you're looking for doesn't exist or has been moved.</p>
+    <p>You will be redirected to the home page automatically.</p>
+    <p>If you are not redirected, <a href="/GG/">click here</a> to go to the GearGang app.</p>
+    <div class="notice">
+      <p>This file is part of the GitHub Pages SPA routing solution.</p>
+      <p>It helps handle direct access to routes within the GearGang application.</p>
+    </div>
+  </div>
 </body>
 </html>
