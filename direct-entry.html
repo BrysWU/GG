@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GearGang - Direct Entry</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: #0F0F0F;
+      color: #FFFFFF;
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+    
+    .card {
+      background-color: #1F1F1F;
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      margin: 0 auto;
+    }
+    
+    h1 {
+      color: #FFD700;
+      margin-bottom: 20px;
+    }
+    
+    .message {
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+    
+    .loader {
+      border: 4px solid rgba(255,215,0,0.1);
+      border-top: 4px solid #FFD700;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .button {
+      background-color: #FFD700;
+      color: #000000;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .button:hover {
+      background-color: #E6C200;
+    }
+    
+    .code {
+      background-color: #2D2D2D;
+      border-radius: 4px;
+      padding: 10px;
+      margin: 10px 0;
+      font-family: monospace;
+      text-align: left;
+      max-width: 100%;
+      overflow-x: auto;
+      color: #CCC;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>GearGang</h1>
+    <div class="message">Loading your application...</div>
+    <div class="loader"></div>
+    <div class="message" id="status">Checking resources...</div>
+    
+    <div>
+      <a href="/GG/" class="button">Go to Main Page</a>
+    </div>
+    
+    <div class="code" id="debug-info"></div>
+  </div>
+
+  <script>
+    // This is a self-executing function that runs as soon as the script loads
+    (function() {
+      const statusElement = document.getElementById('status');
+      const debugElement = document.getElementById('debug-info');
+      
+      // Function to update status message
+      function updateStatus(message) {
+        if (statusElement) {
+          statusElement.textContent = message;
+        }
+      }
+      
+      function updateDebug(message) {
+        if (debugElement) {
+          debugElement.textContent += message + '\n';
+        }
+      }
+      
+      updateDebug('Current path: ' + window.location.pathname);
+      updateDebug('Current hash: ee539f2795819b1005b4981648c59a41');
+      
+      // Check if we should redirect
+      if (window.location.pathname === '/GG/direct-entry.html') {
+        updateStatus("Redirecting to main application...");
+        setTimeout(() => {
+          window.location.href = '/GG/';
+        }, 2000);
+        return;
+      }
+      
+      // Try to load the main JavaScript file
+      updateStatus("Loading application bundle...");
+      
+      function loadScript(src) {
+        return new Promise((resolve, reject) => {
+          updateDebug('Trying to load: ' + src);
+          const script = document.createElement('script');
+          script.src = src;
+          script.onload = () => {
+            updateStatus("Script loaded successfully!");
+            updateDebug('Loaded successfully: ' + src);
+            resolve();
+          };
+          script.onerror = (e) => {
+            updateDebug('Failed to load: ' + src);
+            reject(new Error(`Failed to load script: ${src}`));
+          };
+          document.head.appendChild(script);
+        });
+      }
+      
+      // Try different paths for the main entry file
+      async function tryLoadingApp() {
+        const possiblePaths = [
+          '/GG/_expo/static/js/web/entry-ee539f2795819b1005b4981648c59a41.js',
+          '/_expo/static/js/web/entry-ee539f2795819b1005b4981648c59a41.js',
+          '/GG/entry-backup.js',
+          '/GG/_expo/entry-fallback.js'
+        ];
+        
+        for (const path of possiblePaths) {
+          try {
+            updateStatus(`Attempting to load from: ${path}`);
+            await loadScript(path);
+            updateStatus("Application loaded successfully!");
+            
+            // Redirect to main app after success
+            setTimeout(() => {
+              window.location.href = '/GG/';
+            }, 1000);
+            
+            return; // Exit if successful
+          } catch (err) {
+            console.error(`Failed to load from ${path}:`, err);
+          }
+        }
+        
+        // If we get here, all attempts failed
+        updateStatus("Failed to load application resources. Please click the button to try again.");
+      }
+      
+      // Start loading process
+      tryLoadingApp();
+    })();
+  </script>
+</body>
+</html>
