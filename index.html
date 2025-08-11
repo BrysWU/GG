@@ -3,10 +3,15 @@
 <head>
   <meta charset="utf-8">
   <title>GearGang</title>
-  <meta http-equiv="refresh" content="0;url=/GG/" />
+  <script>
+    // Only redirect if not already on GG path
+    if (!window.location.pathname.includes('/GG')) {
+      window.location.href = '/GG/';
+    }
+  </script>
   <link rel="canonical" href="https://bryswu.github.io/GG/" />
 </head>
 <body>
-  <p>Redirecting to <a href="/GG/">GearGang</a>...</p>
+  <p>If you are not redirected automatically, please <a href="/GG/">click here</a> to go to the GearGang app.</p>
 </body>
 </html>
